@@ -3,6 +3,8 @@ package com.employeepayrollservice;
 import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
+import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -23,8 +25,6 @@ public class EmployeePayrollServiceJDBCTest {
 
     }
 
-
-    //uc2 for select statement
     @Test
     public void givenDBShoulRetrieveContentsFromTheTable() {
         try {
@@ -54,6 +54,26 @@ public class EmployeePayrollServiceJDBCTest {
         }
     }
 
+    @Test
+    public void givebDBShouldUpdateSalaryUsingPreparedStatementOfAnEmployee_ShouldBeInSyncWithDB() {
+        EmployeePayrollService employeePayrollService = new EmployeePayrollService();
+        List<EmployeePayrollData> employeePayrollData = employeePayrollService
+                .readEmployeePayrollDataDB(EmployeePayrollService.IOService.DB_IO);
+        employeePayrollService.updateEmployeeSalaryUsingPrepareStatement("Terissa", 3000000.00);
+        boolean result = employeePayrollService.checkEmployeePayrollInSyncWithDB("Terissa", 3000000.00);
+        assertTrue(result);
+    }
+
+    @Test
+    public void givenDBShoulRetreiveEmployeesForASpecficDateRange() {
+        EmployeePayrollService employeePayrollService = new EmployeePayrollService();
+        employeePayrollService.readEmployeePayrollDataDB(EmployeePayrollService.IOService.DB_IO);
+        Date startDate = Date.valueOf("2018-01-01");
+        Date endDate = Date.valueOf(LocalDate.now());
+        List<EmployeePayrollData> empList = employeePayrollService.getEmployeeForDateRange(EmployeePayrollService.IOService.DB_IO,
+                startDate, endDate);
+        assertEquals(7, empList.size());
+    }
 
 
 }
