@@ -1,13 +1,17 @@
 package com.employeepayrollservice;
 
 import java.sql.*;
+import java.sql.Date;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.List;
+import java.util.*;
 
 public class EmpPayrollJDBCOperations {
 
+    public enum SalaryType {
+        AVG, SUM, MAX, MIN;
+    }
+
+    SalaryType type2;
 
     private static PreparedStatement employeePayrollDataStatement;
     public static EmpPayrollJDBCOperations emp;
@@ -185,7 +189,41 @@ public class EmpPayrollJDBCOperations {
         return empList;
     }
 
+    //uc6
 
+    public Map<String, Double> QueryForSalaryByGender(SalaryType type) {
+        String type2 = type.toString();
+        String sql6 = "";
+        Map<String, Double> SalaryMap = new HashMap<>();
+        try (Connection connection = getConnection()) {
+            switch (type2) {
+                case "AVG": {
+                    sql6 = "select gender,avg(basic_pay) as Retrived_Salary from employee_payroll group by gender;";
+                }
+                case "MAX": {
+                    sql6 = "select gender,max(basic_pay) as Retrived_Salary from employee_payroll group by gender;";
+                }
+                case "MIN": {
+                    sql6 = "select gender,min(basic_pay) as Retrived_Salary from employee_payroll group by gender;";
+                }
+                case "SUM": {
+                    sql6 = "select gender,sum(basic_pay) as Retrived_Salary from employee_payroll group by gender;";
+                }
+            }
+            Statement statement = connection.createStatement();
+            ResultSet result = statement.executeQuery(sql6);
+            while (result.next()) {
+                String gender = result.getString("gender");
+                double salary = result.getDouble("Retrived_Salary");
+                SalaryMap.put(gender, salary);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (EmployeePayrollJDBCException e1) {
+            e1.printStackTrace();
+        }
+        return SalaryMap;
+    }
 
     private static void listDrivers() {
         Enumeration<Driver> driverList = DriverManager.getDrivers();
