@@ -6,6 +6,7 @@ import java.sql.Connection;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class EmployeePayrollServiceJDBCTest {
 
@@ -22,15 +23,27 @@ public class EmployeePayrollServiceJDBCTest {
 
     }
 
+
+    //uc2 for select statement
     @Test
     public void givenDBShoulRetrieveContentsFromTheTable() {
         try {
             List<EmployeePayrollDataJDBC> list1 = e1.showTable();
-            assertEquals(5, list1.size());
+            assertEquals(7, list1.size());
         } catch (EmployeePayrollJDBCException e) {
             e.printStackTrace();
         }
 
+    }
+
+    //uc3 for updating salary of Terissa
+    @Test
+    public void givenDBShouldUpdateSalaryOfAnEmployee() {
+        try {
+            assertTrue(e1.UpdateSalary());
+        } catch (EmployeePayrollJDBCException e) {
+            e.printStackTrace();
+        }
     }
 
 

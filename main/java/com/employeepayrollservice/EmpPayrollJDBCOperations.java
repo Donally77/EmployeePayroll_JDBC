@@ -40,24 +40,25 @@ public class EmpPayrollJDBCOperations {
 
     public static List<EmployeePayrollDataJDBC> showTable() throws EmployeePayrollJDBCException {
         List<EmployeePayrollDataJDBC> empList = new ArrayList<EmployeePayrollDataJDBC>();
-        String sql = "Select * from employeepayroll;";
+        String sql = "Select * from employee_payroll;";
         try (Connection conn = getConnection()) {
             Statement statement = conn.createStatement();
             ResultSet result = statement.executeQuery(sql);
             while (result.next()) {
                 int id = result.getInt("id");
                 String name = result.getString("name");
-                String phone = result.getString("phone_number");
-                String address = result.getString("address");
-                String dept = result.getString("department");
-                String gender = result.getString("Gender");
+                String gender = result.getString("gender");
                 double basic_pay = result.getDouble("basic_pay");
+                String phone = result.getString("phone_no");
+                String dept = result.getString("department");
+                String add = result.getString("address");
                 double deductions = result.getDouble("deductions");
                 double taxable_pay = result.getDouble("taxable_pay");
                 double tax = result.getDouble("tax");
                 double net_pay = result.getDouble("net_pay");
                 LocalDate startDate = result.getDate("start").toLocalDate();
-                EmployeePayrollDataJDBC emp = new EmployeePayrollDataJDBC(id, name, phone, address, dept, gender, basic_pay, deductions, taxable_pay, tax, net_pay, startDate);
+                EmployeePayrollDataJDBC emp = new EmployeePayrollDataJDBC(id, name, gender, basic_pay, phone, dept, add,
+                        deductions, taxable_pay, tax, net_pay, startDate);
                 empList.add(emp);
             }
         } catch (SQLException e) {
@@ -67,6 +68,32 @@ public class EmpPayrollJDBCOperations {
         return empList;
 
     }
+
+
+    //uc3 for update salary of employee
+    public static boolean UpdateSalary() throws EmployeePayrollJDBCException {
+        double salary = 3000000;
+        String name = "Terissa";
+        boolean update = true;
+        String sql2 = String.format("UPDATE employee_payroll SET basic_pay = %.2f WHERE name = '%s';", salary, name);
+        int res = 0;
+        try (Connection con2 = getConnection()) {
+            Statement statement = con2.createStatement();
+            res = statement.executeUpdate(sql2);
+            if (res == 0) {
+                update = false;
+                throw new EmployeePayrollJDBCException("Cannot update data!! \nUpdateFailException thrown...!!",
+                        EmployeePayrollJDBCException.ExceptionType.UPDATE_FAILED);
+            }
+        } catch (SQLException e) {
+            update = false;
+            throw new EmployeePayrollJDBCException("Cannot update data!! \nUpdateFailException thrown...!!",
+                    EmployeePayrollJDBCException.ExceptionType.UPDATE_FAILED);
+        }
+        return update;
+    }
+
+
 
     private static void listDrivers() {
         Enumeration<Driver> driverList = DriverManager.getDrivers();
