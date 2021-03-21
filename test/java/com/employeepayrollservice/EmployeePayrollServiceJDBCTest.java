@@ -6,6 +6,7 @@ import java.sql.Connection;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -73,6 +74,15 @@ public class EmployeePayrollServiceJDBCTest {
         List<EmployeePayrollData> empList = employeePayrollService.getEmployeeForDateRange(EmployeePayrollService.IOService.DB_IO,
                 startDate, endDate);
         assertEquals(7, empList.size());
+    }
+
+    @Test
+    public void givenDBShouldRetrieveSalaryGroupByGenderAccordingTotypeAsked() {
+        EmployeePayrollService employeePayrollService = new EmployeePayrollService();
+        employeePayrollService.readEmployeePayrollDataDB(EmployeePayrollService.IOService.DB_IO);
+        Map<String, Double> salaryMap = employeePayrollService.readAverageSalaryByGender(EmployeePayrollService.IOService.DB_IO,
+                EmpPayrollJDBCOperations.SalaryType.SUM);
+        assertTrue(salaryMap.get("M").equals(600000.0) && salaryMap.get("F").equals(6900000.0));
     }
 
 

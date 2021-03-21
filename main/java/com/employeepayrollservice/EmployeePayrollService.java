@@ -1,10 +1,7 @@
 package com.employeepayrollservice;
 
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 public class EmployeePayrollService {
 
@@ -159,6 +156,13 @@ public class EmployeePayrollService {
     public List<EmployeePayrollData> getEmployeeForDateRange(IOService DB_IO, java.sql.Date startDate, java.sql.Date endDate) {
         if (DB_IO.equals(IOService.DB_IO)) {
             return employeePayrollDBService.QueryForGivenDateRange(startDate, endDate);
+        }
+        return null;
+    }
+
+    public Map<String, Double> readAverageSalaryByGender(IOService DB_IO, EmpPayrollJDBCOperations.SalaryType type) {
+        if (DB_IO.equals(IOService.DB_IO)) {
+            return employeePayrollDBService.QueryForSalaryByGender(type);
         }
         return null;
     }
