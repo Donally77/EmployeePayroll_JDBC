@@ -17,15 +17,15 @@ public class EmployeePayrollDataJDBC {
     public double net_pay;
     public LocalDate startDate;
 
-    public EmployeePayrollDataJDBC(int id, String name,String phone,String dept,String add, String gender, double basic_pay,
-                                    double deductions, double taxable_pay, double tax, double net_pay, LocalDate start) {
+    public EmployeePayrollDataJDBC(int id, String name, String gender, double basic_pay, String phone, String dept,
+                                   String add, double deductions, double taxable_pay, double tax, double net_pay, LocalDate start) {
         this.id = id;
         this.name = name;
-        this.phone = phone;
-        this.add = add;
-        this.dept = dept;
         this.gender = gender;
         this.basic_pay = basic_pay;
+        this.phone = phone;
+        this.dept = dept;
+        this.add = add;
         this.deductions = deductions;
         this.taxable_pay = taxable_pay;
         this.tax = tax;
