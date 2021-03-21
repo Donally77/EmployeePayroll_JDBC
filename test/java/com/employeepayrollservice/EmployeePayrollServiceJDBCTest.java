@@ -28,7 +28,7 @@ public class EmployeePayrollServiceJDBCTest {
     @Test
     public void givenDBShoulRetrieveContentsFromTheTable() {
         try {
-            List<EmployeePayrollDataJDBC> list1 = e1.showTable();
+            List<EmployeePayrollData> list1 = e1.readEmployeePayrollData();
             assertEquals(7, list1.size());
         } catch (EmployeePayrollJDBCException e) {
             e.printStackTrace();
@@ -36,15 +36,24 @@ public class EmployeePayrollServiceJDBCTest {
 
     }
 
-    //uc3 for updating salary of Terissa
     @Test
     public void givenDBShouldUpdateSalaryOfAnEmployee() {
         try {
-            assertTrue(e1.UpdateSalary());
+            assertTrue(e1.UpdateSalary(EmpPayrollJDBCOperations.UpdateType.STATEMENT));
         } catch (EmployeePayrollJDBCException e) {
             e.printStackTrace();
         }
     }
+
+    @Test
+    public void givebDBShouldUpdateSalaryUsingPreparedStatementOfAnEmployee() {
+        try {
+            assertTrue(e1.UpdateSalary(EmpPayrollJDBCOperations.UpdateType.PREPARED_STATEMENT));
+        } catch (EmployeePayrollJDBCException e) {
+            e.printStackTrace();
+        }
+    }
+
 
 
 }

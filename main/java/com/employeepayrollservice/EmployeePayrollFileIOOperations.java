@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,7 +34,7 @@ public class EmployeePayrollFileIOOperations {
         }
         return entries;
     }
-    //uc5
+
     public void printEmployeePayrollData() {
         try {
             Files.lines(new File(PAYROLL_TEXT_FILE).toPath()).forEach(System.out::println);
@@ -42,7 +43,6 @@ public class EmployeePayrollFileIOOperations {
         }
     }
 
-    //UC6
     public List<EmployeePayrollData> readEmployeePayrollData() {
         List<EmployeePayrollData> employeeList = new ArrayList<EmployeePayrollData>();
         try {
@@ -54,8 +54,27 @@ public class EmployeePayrollFileIOOperations {
                     i++;
                     String name = dataArr[i].replaceAll("Name = ", "");
                     i++;
-                    double salary = Double.parseDouble(dataArr[i].replaceAll("Salary = ", ""));
-                    EmployeePayrollData employeePayrollData = new EmployeePayrollData(id, name, salary);
+                    String gender = dataArr[i].replaceAll("Gender = ", "");
+                    i++;
+                    double salary = Double.parseDouble(dataArr[i].replaceAll("Basic Pay = ", ""));
+                    i++;
+                    String phone = dataArr[i].replaceAll("Phone = ", "");
+                    i++;
+                    String dept = dataArr[i].replaceAll("Department=", "");
+                    i++;
+                    String add = dataArr[i].replaceAll("Address=", "");
+                    i++;
+                    double ded = Double.parseDouble(dataArr[i].replaceAll("Deductions =", ""));
+                    i++;
+                    double tp = Double.parseDouble(dataArr[i].replaceAll("Taxable Pay=", ""));
+                    i++;
+                    double tax = Double.parseDouble(dataArr[i].replaceAll("Tax =", ""));
+                    i++;
+                    double np = Double.parseDouble(dataArr[i].replaceAll("Net Pay =", ""));
+                    i++;
+                    Date start = Date.valueOf(dataArr[i].replaceAll("Start Date =", ""));
+                    EmployeePayrollData employeePayrollData = new EmployeePayrollData(id, name, gender, salary, phone,
+                            dept, add, ded, tp, tax, np, start);
                     employeeList.add(employeePayrollData);
                 }
             });
