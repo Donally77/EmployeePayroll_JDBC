@@ -1,6 +1,8 @@
 package com.employeepayrollservice;
 
+import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
 
@@ -11,9 +13,11 @@ public class EmployeePayrollService {
     }
 
     private List<EmployeePayrollData> employeeList;
+    // private List<EmployeePayrollData> employeePayrollList;
+    private EmpPayrollJDBCOperations employeePayrollDBService;
 
     public EmployeePayrollService() {
-
+        employeePayrollDBService = EmpPayrollJDBCOperations.getInstance();
     }
 
     public EmployeePayrollService(List<EmployeePayrollData> employeeList) {
@@ -22,10 +26,6 @@ public class EmployeePayrollService {
     }
 
     public static void main(String[] args) {
-        //master welcome message
-
-        System.out.println(".......Welcome to Employee Payroll Service........");
-
         ArrayList<EmployeePayrollData> employeeList = new ArrayList<>();
         EmployeePayrollService empService = new EmployeePayrollService(employeeList);
         Scanner sc = new Scanner(System.in);
@@ -38,12 +38,30 @@ public class EmployeePayrollService {
         int id = Integer.parseInt(sc.nextLine());
         System.out.println("Enter Employee name: ");
         String name = sc.nextLine();
+        System.out.println("Enter Employee gender: ");
+        String gender = sc.nextLine();
         System.out.println("Enter Employee Salary: ");
         Double salary = Double.parseDouble(sc.nextLine());
-        employeeList.add(new EmployeePayrollData(id, name, salary));
+        System.out.println("Enter Employee phone: ");
+        String phone = sc.nextLine();
+        System.out.println("Enter Employee department: ");
+        String dept = sc.nextLine();
+        System.out.println("Enter Employee Address: ");
+        String add = sc.nextLine();
+        System.out.println("Enter Employee Deductions: ");
+        Double ded = Double.parseDouble(sc.nextLine());
+        System.out.println("Enter Employee Taxable pay: ");
+        Double tp = Double.parseDouble(sc.nextLine());
+        System.out.println("Enter Employee tax: ");
+        Double tax = Double.parseDouble(sc.nextLine());
+        System.out.println("Enter Employee net pay: ");
+        Double net = Double.parseDouble(sc.nextLine());
+        System.out.println("Enter the Start Date :");
+        Date date = Date.from(Instant.parse(sc.nextLine()));
+        employeeList.add(new EmployeePayrollData(id, name, gender, salary, phone, dept, add, ded, tp, tax, net, (java.sql.Date) date));
     }
 
-
+    // Reads input from the user
 
     public void writeData(IOService ioService) {
         if (ioService.equals(IOService.CONSOLE_IO))
@@ -52,7 +70,7 @@ public class EmployeePayrollService {
             new EmployeePayrollFileIOOperations().writeEmployeePayrollData(employeeList);
     }
 
-
+    // Writes Employee payroll data to console
 
     public long countEntries(IOService ioService) {
         if (ioService.equals(IOService.FILE_IO))
@@ -60,18 +78,84 @@ public class EmployeePayrollService {
         return 0;
     }
 
-//uc5
-public void printData(IOService ioService) {
-    new EmployeePayrollFileIOOperations().printEmployeePayrollData();
-}
+    // Counts number of employee entries
 
-//UC6
-public List<EmployeePayrollData> readData(IOService ioService) {
-    if (ioService.equals(IOService.FILE_IO))
-        return new EmployeePayrollFileIOOperations().readEmployeePayrollData();
-    else
+    public void printData(IOService ioService) {
+        new EmployeePayrollFileIOOperations().printEmployeePayrollData();
+    }
+
+    // prints employee payroll data
+
+    public List<EmployeePayrollData> readData(IOService ioService) {
+        if (ioService.equals(IOService.FILE_IO))
+            return new EmployeePayrollFileIOOperations().readEmployeePayrollData();
+        else
+            return null;
+    }
+
+    // reads the employee payroll file
+
+    public List<EmployeePayrollData> readEmployeePayrollDataDB(IOService dbIo) {
+        if (dbIo.equals(IOService.DB_IO)) {
+            try {
+                this.employeeList = employeePayrollDBService.readEmployeePayrollData();
+            } catch (EmployeePayrollJDBCException e) {
+                e.printStackTrace();
+            }
+        }
+        return this.employeeList;
+    }
+
+    public void updateEmployeeSalary(String name, double salary) {
+        boolean result;
+        try {
+            result = employeePayrollDBService.UpdateSalary(EmpPayrollJDBCOperations.UpdateType.PREPARED_STATEMENT);
+            if (result == false)
+                return;
+            EmployeePayrollData employeePayrollData = this.getEmployeePayrollData(name);
+            if (employeePayrollData != null)
+                employeePayrollData.basic_pay = salary;
+        } catch (EmployeePayrollJDBCException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private EmployeePayrollData getEmployeePayrollData(String name) {
+        for (EmployeePayrollData data : employeeList) {
+            if (data.name.equals(name)) {
+                return data;
+            }
+        }
         return null;
-}
+    }
+
+    public boolean checkEmployeePayrollInSyncWithDB(String name, double salary) {
+        for (EmployeePayrollData data : employeeList) {
+            if (data.name.equals(name)) {
+                if (Double.compare(data.basic_pay, salary) == 0) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public void updateEmployeeSalaryUsingPrepareStatement(String name, double salary) {
+        boolean result;
+        try {
+            result = employeePayrollDBService.UpdateSalary(EmpPayrollJDBCOperations.UpdateType.PREPARED_STATEMENT);
+            if (result == false)
+                return;
+            EmployeePayrollData employeePayrollData = this.getEmployeePayrollData(name);
+            if (employeePayrollData != null)
+                employeePayrollData.basic_pay = salary;
+        } catch (EmployeePayrollJDBCException e) {
+            e.printStackTrace();
+        }
+
+    }
+
 
 
 
