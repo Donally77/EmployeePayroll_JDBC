@@ -168,6 +168,7 @@ public class EmpPayrollJDBCOperations {
         }
     }
 
+    //uc5 for retriving data of employee from given range of join date
     public List<EmployeePayrollData> QueryForGivenDateRange(Date startDate, Date endDate) {
         String sql = String.format("select * from employee_payroll where start between '%s' and '%s';", startDate,
                 endDate);

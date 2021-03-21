@@ -28,7 +28,7 @@ public class EmployeePayrollServiceTest {
         employeePayrollService = new EmployeePayrollService(Arrays.asList(empArray));
         employeePayrollService.writeData(EmployeePayrollService.IOService.FILE_IO);
         long entries = employeePayrollService.countEntries(EmployeePayrollService.IOService.FILE_IO);
-        assertEquals(7, entries);
+        assertEquals(3, entries);
     }
 
     // test method to check if the employee data is written to the file
@@ -44,7 +44,7 @@ public class EmployeePayrollServiceTest {
         employeePayrollService.writeData(EmployeePayrollService.IOService.FILE_IO);
         long entries = employeePayrollService.countEntries(EmployeePayrollService.IOService.FILE_IO);
         // employeePayrollService.printData(IOService.FILE_IO); // print method called
-        assertEquals(7, entries);
+        assertEquals(3, entries);
     }
 
     // test method to check for print function in EmployeePayrollFileIOOperations
@@ -61,7 +61,7 @@ public class EmployeePayrollServiceTest {
         long entries = employeePayrollService.countEntries(EmployeePayrollService.IOService.FILE_IO);
         employeePayrollService.printData(EmployeePayrollService.IOService.FILE_IO);//
         List<EmployeePayrollData> employeeList = employeePayrollService.readData(EmployeePayrollService.IOService.DB_IO);
-        assertEquals(7, entries);
+        assertEquals(3, entries);
     }
 
 }
